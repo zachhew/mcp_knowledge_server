@@ -1,0 +1,14 @@
+class AppError(Exception):
+    """Base application exception."""
+
+
+class ConfigurationError(AppError):
+    """Raised when application configuration is invalid."""
+
+
+class DatabaseError(AppError):
+    """Raised when a database-level failure occurs."""
+
+
+class CacheError(AppError):
+    """Raised when a cache-level failure occurs."""
