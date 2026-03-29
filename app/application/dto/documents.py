@@ -15,3 +15,15 @@ class DocumentListItemDTO:
     owner: str
     document_type: DocumentType
     tags: str | None
+
+
+@dataclass(slots=True)
+class DocumentDetailDTO:
+    id: UUID
+    project_id: UUID
+    title: str
+    content: str
+    summary: str | None
+    owner: str
+    document_type: DocumentType
+    tags: str | None
