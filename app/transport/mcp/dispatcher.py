@@ -5,6 +5,7 @@ import logging
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.exceptions import AppError
 from app.transport.mcp.registry import ToolRegistry
 from app.transport.mcp.result import ToolExecutionResult
 
@@ -41,6 +42,17 @@ class MCPDispatcher:
 
         except ValidationError as exc:
             logger.warning("Tool validation failed for %s: %s", tool_name, exc)
+            await session.rollback()
+            return ToolExecutionResult(
+                tool_name=tool_name,
+                content={},
+                is_error=True,
+                error_message=str(exc),
+            )
+
+        except AppError as exc:
+            logger.warning("Application error for %s: %s", tool_name, exc)
+            await session.rollback()
             return ToolExecutionResult(
                 tool_name=tool_name,
                 content={},
@@ -50,6 +62,7 @@ class MCPDispatcher:
 
         except ValueError as exc:
             logger.warning("Tool execution rejected for %s: %s", tool_name, exc)
+            await session.rollback()
             return ToolExecutionResult(
                 tool_name=tool_name,
                 content={},
@@ -59,6 +72,7 @@ class MCPDispatcher:
 
         except Exception as exc:
             logger.exception("Unhandled tool execution error for %s", tool_name)
+            await session.rollback()
             return ToolExecutionResult(
                 tool_name=tool_name,
                 content={},
