@@ -20,6 +20,16 @@ from app.transport.mcp.tools.search_tasks import (
     SearchTasksOutput,
     search_tasks_handler,
 )
+from app.transport.mcp.tools.create_note import (
+    CreateNoteInput,
+    CreateNoteOutput,
+    create_note_handler,
+)
+from app.transport.mcp.tools.create_task import (
+    CreateTaskInput,
+    CreateTaskOutput,
+    create_task_handler,
+)
 
 registry = ToolRegistry()
 
@@ -53,6 +63,22 @@ registry.register(
     input_model=SearchTasksInput,
     output_model=SearchTasksOutput,
     handler=search_tasks_handler,
+)
+
+registry.register(
+    name="create_task",
+    description="Creates a task inside a project.",
+    input_model=CreateTaskInput,
+    output_model=CreateTaskOutput,
+    handler=create_task_handler,
+)
+
+registry.register(
+    name="create_note",
+    description="Creates a note inside a project.",
+    input_model=CreateNoteInput,
+    output_model=CreateNoteOutput,
+    handler=create_note_handler,
 )
 
 dispatcher = MCPDispatcher(registry)
