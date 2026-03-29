@@ -7,6 +7,8 @@ from uuid import UUID
 from app.domain.models.document import Document
 from app.domain.models.project import Project
 from app.domain.models.task import Task
+from app.domain.models.audit_log import AuditLog
+from app.domain.models.note import Note
 
 
 class ProjectRepositoryProtocol(Protocol):
@@ -36,3 +38,16 @@ class TaskRepositoryProtocol(Protocol):
         assignee: str | None = None,
         limit: int = 20,
     ) -> Sequence[Task]: ...
+
+
+class NoteRepositoryProtocol(Protocol):
+    async def get_by_idempotency_key(self, idempotency_key: str) -> Note | None: ...
+    async def create(self, note: Note) -> Note: ...
+
+
+class TaskWriteRepositoryProtocol(Protocol):
+    async def create(self, task: Task) -> Task: ...
+
+
+class AuditLogRepositoryProtocol(Protocol):
+    async def create(self, audit_log: AuditLog) -> AuditLog: ...
