@@ -17,3 +17,25 @@ class TaskListItemDTO:
     priority: TaskPriority
     assignee: str | None
     created_by: str
+
+
+@dataclass(slots=True)
+class TaskCreateDTO:
+    project_id: UUID
+    title: str
+    description: str | None
+    priority: TaskPriority
+    assignee: str | None
+    created_by: str
+
+
+@dataclass(slots=True)
+class TaskCreatedDTO:
+    id: UUID
+    project_id: UUID
+    title: str
+    description: str | None
+    status: TaskStatus
+    priority: TaskPriority
+    assignee: str | None
+    created_by: str
