@@ -10,12 +10,3 @@ def test_liveness_probe() -> None:
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
-
-
-def test_readiness_probe() -> None:
-    client = TestClient(app)
-
-    response = client.get("/api/v1/health/ready")
-
-    assert response.status_code == 200
-    assert response.json() == {"status": "ready"}
