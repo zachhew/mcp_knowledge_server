@@ -1,0 +1,60 @@
+from app.transport.mcp.dispatcher import MCPDispatcher
+from app.transport.mcp.registry import ToolRegistry
+from app.transport.mcp.tools.build_project_context import (
+    BuildProjectContextInput,
+    BuildProjectContextOutput,
+    build_project_context_handler,
+)
+from app.transport.mcp.tools.get_document import (
+    GetDocumentInput,
+    GetDocumentOutput,
+    get_document_handler,
+)
+from app.transport.mcp.tools.search_knowledge import (
+    SearchKnowledgeInput,
+    SearchKnowledgeOutput,
+    search_knowledge_handler,
+)
+from app.transport.mcp.tools.search_tasks import (
+    SearchTasksInput,
+    SearchTasksOutput,
+    search_tasks_handler,
+)
+
+registry = ToolRegistry()
+
+registry.register(
+    name="search_knowledge",
+    description="Searches knowledge documents by text query and optional project filter.",
+    input_model=SearchKnowledgeInput,
+    output_model=SearchKnowledgeOutput,
+    handler=search_knowledge_handler,
+)
+
+registry.register(
+    name="get_document",
+    description="Returns a full document by its identifier.",
+    input_model=GetDocumentInput,
+    output_model=GetDocumentOutput,
+    handler=get_document_handler,
+)
+
+registry.register(
+    name="build_project_context",
+    description="Builds structured project context including recent documents and open tasks.",
+    input_model=BuildProjectContextInput,
+    output_model=BuildProjectContextOutput,
+    handler=build_project_context_handler,
+)
+
+registry.register(
+    name="search_tasks",
+    description="Searches tasks by text query, project, or assignee.",
+    input_model=SearchTasksInput,
+    output_model=SearchTasksOutput,
+    handler=search_tasks_handler,
+)
+
+dispatcher = MCPDispatcher(registry)
+
+__all__ = ["dispatcher", "registry"]
