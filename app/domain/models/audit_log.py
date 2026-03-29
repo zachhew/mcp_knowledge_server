@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import ForeignKey, Enum, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.domain.enums.audit_action import AuditAction
@@ -11,7 +11,13 @@ class AuditLog(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     client_id: Mapped[str | None] = mapped_column(ForeignKey("api_clients.id", ondelete="SET NULL"), nullable=True)
     request_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     tool_name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
-    action_type: Mapped[AuditAction] = mapped_column(String(50), nullable=False)
+    action_type: Mapped[AuditAction] = mapped_column(
+        Enum(
+            AuditAction,
+            name="audit_action_enum",
+            values_callable=lambda enum_cls: [item.value for item in enum_cls],
+        )
+    )
     input_payload: Mapped[str | None] = mapped_column(Text, nullable=True)
     output_status: Mapped[str] = mapped_column(String(50), nullable=False)
     error_code: Mapped[str | None] = mapped_column(String(100), nullable=True)

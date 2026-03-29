@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, ForeignKey, String, Text
+from sqlalchemy import Boolean, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.domain.enums.document_type import DocumentType
@@ -14,7 +14,13 @@ class Document(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     tags: Mapped[str | None] = mapped_column(Text, nullable=True)
     owner: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
-    document_type: Mapped[DocumentType] = mapped_column(String(50), nullable=False, default=DocumentType.OTHER)
+    document_type: Mapped[DocumentType] = mapped_column(
+        Enum(
+            DocumentType,
+            name="document_type_enum",
+            values_callable=lambda enum_cls: [item.value for item in enum_cls],
+        )
+    )
     is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     project = relationship("Project", back_populates="documents")
