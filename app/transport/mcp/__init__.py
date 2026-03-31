@@ -38,6 +38,7 @@ registry.register(
     description="Searches knowledge documents by text query and optional project filter.",
     input_model=SearchKnowledgeInput,
     output_model=SearchKnowledgeOutput,
+    required_scope="knowledge:read",
     handler=search_knowledge_handler,
 )
 
@@ -46,6 +47,7 @@ registry.register(
     description="Returns a full document by its identifier.",
     input_model=GetDocumentInput,
     output_model=GetDocumentOutput,
+    required_scope="knowledge:read",
     handler=get_document_handler,
 )
 
@@ -54,6 +56,7 @@ registry.register(
     description="Builds structured project context including recent documents and open tasks.",
     input_model=BuildProjectContextInput,
     output_model=BuildProjectContextOutput,
+    required_scope="projects:read",
     handler=build_project_context_handler,
 )
 
@@ -62,6 +65,7 @@ registry.register(
     description="Searches tasks by text query, project, or assignee.",
     input_model=SearchTasksInput,
     output_model=SearchTasksOutput,
+    required_scope="tasks:read",
     handler=search_tasks_handler,
 )
 
@@ -70,6 +74,7 @@ registry.register(
     description="Creates a task inside a project.",
     input_model=CreateTaskInput,
     output_model=CreateTaskOutput,
+    required_scope="tasks:write",
     handler=create_task_handler,
 )
 
@@ -78,6 +83,7 @@ registry.register(
     description="Creates a note inside a project.",
     input_model=CreateNoteInput,
     output_model=CreateNoteOutput,
+    required_scope="notes:write",
     handler=create_note_handler,
 )
 
