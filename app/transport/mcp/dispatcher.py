@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from pydantic import ValidationError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import AppError
+from app.transport.mcp.auth import require_scope
+from app.transport.mcp.context import ToolExecutionContext
 from app.transport.mcp.registry import ToolRegistry
 from app.transport.mcp.result import ToolExecutionResult
 
@@ -16,21 +18,32 @@ class MCPDispatcher:
     def __init__(self, registry: ToolRegistry) -> None:
         self._registry = registry
 
-    async def list_tools(self) -> list[dict]:
+    async def list_tools(self) -> list[dict[str, Any]]:
         return self._registry.list_definitions()
 
     async def call_tool(
         self,
-        session: AsyncSession,
+        execution_context: ToolExecutionContext,
         tool_name: str,
-        arguments: dict,
+        arguments: dict[str, Any],
     ) -> ToolExecutionResult:
-        logger.info("Calling MCP tool: %s", tool_name)
+        logger.info(
+            "Calling MCP tool: %s",
+            tool_name,
+            extra={
+                "request_id": execution_context.request_context.request_id,
+                "client_name": execution_context.request_context.client_name,
+            },
+        )
+
+        session = execution_context.db_session
 
         try:
             tool = self._registry.get(tool_name)
+            require_scope(execution_context.request_context, tool.required_scope)
+
             parsed_input = tool.input_model(**arguments)
-            raw_result = await tool.handler(session, parsed_input)
+            raw_result = await tool.handler(execution_context, parsed_input)
             parsed_output = tool.output_model(**raw_result)
 
             return ToolExecutionResult(
