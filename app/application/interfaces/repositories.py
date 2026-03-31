@@ -9,6 +9,7 @@ from app.domain.models.project import Project
 from app.domain.models.task import Task
 from app.domain.models.audit_log import AuditLog
 from app.domain.models.note import Note
+from app.domain.models.api_client import ApiClient
 
 
 class ProjectRepositoryProtocol(Protocol):
@@ -51,3 +52,8 @@ class TaskWriteRepositoryProtocol(Protocol):
 
 class AuditLogRepositoryProtocol(Protocol):
     async def create(self, audit_log: AuditLog) -> AuditLog: ...
+
+
+class ApiClientRepositoryProtocol(Protocol):
+    async def get_by_name(self, name: str) -> ApiClient | None: ...
+    async def get_by_hashed_api_key(self, hashed_api_key: str) -> ApiClient | None: ...
