@@ -5,10 +5,11 @@ from dataclasses import dataclass
 from typing import Any
 
 from pydantic import BaseModel
-from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.transport.mcp.context import ToolExecutionContext
 
 
-ToolHandler = Callable[[AsyncSession, BaseModel], Awaitable[dict[str, Any]]]
+ToolHandler = Callable[[ToolExecutionContext, BaseModel], Awaitable[dict[str, Any]]]
 
 
 @dataclass(slots=True)
@@ -17,12 +18,14 @@ class RegisteredTool:
     description: str
     input_model: type[BaseModel]
     output_model: type[BaseModel]
+    required_scope: str
     handler: ToolHandler
 
     def to_definition(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "description": self.description,
+            "requiredScope": self.required_scope,
             "inputSchema": self.input_model.model_json_schema(),
             "outputSchema": self.output_model.model_json_schema(),
         }
@@ -39,6 +42,7 @@ class ToolRegistry:
         description: str,
         input_model: type[BaseModel],
         output_model: type[BaseModel],
+        required_scope: str,
         handler: ToolHandler,
     ) -> None:
         if name in self._tools:
@@ -49,6 +53,7 @@ class ToolRegistry:
             description=description,
             input_model=input_model,
             output_model=output_model,
+            required_scope=required_scope,
             handler=handler,
         )
 
