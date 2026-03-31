@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.request_context import RequestContext
 from app.infrastructure.db.session import get_db_session
+from app.transport.http.dependencies import build_request_context
 from app.transport.mcp import dispatcher
+from app.transport.mcp.context import ToolExecutionContext
 from app.transport.mcp.schemas import JsonRpcError, JsonRpcRequest, JsonRpcResponse, ToolCallParams
 
 router = APIRouter(tags=["mcp"])
@@ -16,6 +19,7 @@ INTERNAL_ERROR = -32603
 async def mcp_endpoint(
     request: JsonRpcRequest,
     session: AsyncSession = Depends(get_db_session),
+    request_context: RequestContext = Depends(build_request_context),
 ) -> JsonRpcResponse:
     params = request.params or {}
 
@@ -29,8 +33,13 @@ async def mcp_endpoint(
 
         if request.method == "tools/call":
             tool_request = ToolCallParams(**params)
+            execution_context = ToolExecutionContext(
+                db_session=session,
+                request_context=request_context,
+            )
+
             result = await dispatcher.call_tool(
-                session=session,
+                execution_context=execution_context,
                 tool_name=tool_request.name,
                 arguments=tool_request.arguments,
             )
