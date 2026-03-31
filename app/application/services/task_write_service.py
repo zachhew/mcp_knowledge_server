@@ -53,7 +53,13 @@ class TaskWriteService:
             request_id=request_context.request_id,
             tool_name="create_task",
             action_type=AuditAction.TASK_CREATED,
-            input_payload=payload.title,
+            input_payload=(
+                f"project_id={payload.project_id};"
+                f"title={payload.title};"
+                f"priority={payload.priority.value};"
+                f"assignee={payload.assignee};"
+                f"created_by={payload.created_by}"
+            ),
             output_status="success",
             error_code=None,
         )
