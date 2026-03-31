@@ -7,6 +7,7 @@ from app.application.interfaces.repositories import (
     TaskWriteRepositoryProtocol,
 )
 from app.core.exceptions import NotFoundError, ValidationAppError
+from app.core.request_context import RequestContext
 from app.domain.enums.audit_action import AuditAction
 from app.domain.enums.task_status import TaskStatus
 from app.domain.models.audit_log import AuditLog
@@ -24,7 +25,11 @@ class TaskWriteService:
         self._project_repository = project_repository
         self._audit_log_repository = audit_log_repository
 
-    async def create_task(self, payload: TaskCreateDTO) -> TaskCreatedDTO:
+    async def create_task(
+        self,
+        payload: TaskCreateDTO,
+        request_context: RequestContext,
+    ) -> TaskCreatedDTO:
         project = await self._project_repository.get_by_id(payload.project_id)
         if project is None:
             raise NotFoundError("Project not found")
@@ -44,8 +49,8 @@ class TaskWriteService:
         created = await self._task_repository.create(task)
 
         audit_log = AuditLog(
-            client_id=None,
-            request_id=None,
+            client_id=request_context.client_id,
+            request_id=request_context.request_id,
             tool_name="create_task",
             action_type=AuditAction.TASK_CREATED,
             input_payload=payload.title,
