@@ -9,6 +9,7 @@ from app.application.services.project_service import ProjectService
 from app.infrastructure.repositories.document_repository import SQLAlchemyDocumentRepository
 from app.infrastructure.repositories.project_repository import SQLAlchemyProjectRepository
 from app.infrastructure.repositories.task_repository import SQLAlchemyTaskRepository
+from app.transport.mcp.context import ToolExecutionContext
 
 
 class BuildProjectContextInput(BaseModel):
@@ -52,9 +53,11 @@ class BuildProjectContextOutput(BaseModel):
 
 
 async def build_project_context_handler(
-    session: AsyncSession,
+    execution_context: ToolExecutionContext,
     payload: BuildProjectContextInput,
 ) -> dict[str, Any]:
+    session = execution_context.db_session
+
     project_repository = SQLAlchemyProjectRepository(session)
     document_repository = SQLAlchemyDocumentRepository(session)
     task_repository = SQLAlchemyTaskRepository(session)
@@ -88,7 +91,7 @@ async def build_project_context_handler(
                 "title": item.title,
                 "summary": item.summary,
                 "owner": item.owner,
-                "document_type": str(item.document_type),
+                "document_type": item.document_type.value,
                 "tags": item.tags,
             }
             for item in context.recent_documents

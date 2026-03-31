@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.services.document_service import DocumentService
 from app.infrastructure.repositories.document_repository import SQLAlchemyDocumentRepository
+from app.transport.mcp.context import ToolExecutionContext
 
 
 class GetDocumentInput(BaseModel):
@@ -26,9 +27,11 @@ class GetDocumentOutput(BaseModel):
 
 
 async def get_document_handler(
-    session: AsyncSession,
+    execution_context: ToolExecutionContext,
     payload: GetDocumentInput,
 ) -> dict[str, Any]:
+    session = execution_context.db_session
+
     repository = SQLAlchemyDocumentRepository(session)
     service = DocumentService(repository)
 

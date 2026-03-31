@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.services.document_service import DocumentService
 from app.infrastructure.repositories.document_repository import SQLAlchemyDocumentRepository
+from app.transport.mcp.context import ToolExecutionContext
 
 
 class SearchKnowledgeInput(BaseModel):
@@ -31,9 +32,11 @@ class SearchKnowledgeOutput(BaseModel):
 
 
 async def search_knowledge_handler(
-    session: AsyncSession,
+    execution_context: ToolExecutionContext,
     payload: SearchKnowledgeInput,
 ) -> dict[str, Any]:
+    session = execution_context.db_session
+
     repository = SQLAlchemyDocumentRepository(session)
     service = DocumentService(repository)
 

@@ -12,6 +12,7 @@ from app.domain.enums.task_priority import TaskPriority
 from app.infrastructure.repositories.audit_log_repository import SQLAlchemyAuditLogRepository
 from app.infrastructure.repositories.project_repository import SQLAlchemyProjectRepository
 from app.infrastructure.repositories.task_write_repository import SQLAlchemyTaskWriteRepository
+from app.transport.mcp.context import ToolExecutionContext
 
 
 class CreateTaskInput(BaseModel):
@@ -35,9 +36,11 @@ class CreateTaskOutput(BaseModel):
 
 
 async def create_task_handler(
-    session: AsyncSession,
+    execution_context: ToolExecutionContext,
     payload: CreateTaskInput,
 ) -> dict[str, Any]:
+    session = execution_context.db_session
+
     task_repository = SQLAlchemyTaskWriteRepository(session)
     project_repository = SQLAlchemyProjectRepository(session)
     audit_log_repository = SQLAlchemyAuditLogRepository(session)
@@ -56,7 +59,8 @@ async def create_task_handler(
             priority=payload.priority,
             assignee=payload.assignee,
             created_by=payload.created_by,
-        )
+        ),
+        request_context=execution_context.request_context,
     )
 
     await session.commit()

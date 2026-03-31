@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.services.task_service import TaskService
 from app.infrastructure.repositories.task_repository import SQLAlchemyTaskRepository
+from app.transport.mcp.context import ToolExecutionContext
 
 
 class SearchTasksInput(BaseModel):
@@ -33,9 +34,11 @@ class SearchTasksOutput(BaseModel):
 
 
 async def search_tasks_handler(
-    session: AsyncSession,
+    execution_context: ToolExecutionContext,
     payload: SearchTasksInput,
 ) -> dict[str, Any]:
+    session = execution_context.db_session
+
     repository = SQLAlchemyTaskRepository(session)
     service = TaskService(repository)
 

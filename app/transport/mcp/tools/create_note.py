@@ -11,6 +11,7 @@ from app.application.services.note_service import NoteService
 from app.infrastructure.repositories.audit_log_repository import SQLAlchemyAuditLogRepository
 from app.infrastructure.repositories.note_repository import SQLAlchemyNoteRepository
 from app.infrastructure.repositories.project_repository import SQLAlchemyProjectRepository
+from app.transport.mcp.context import ToolExecutionContext
 
 
 class CreateNoteInput(BaseModel):
@@ -31,9 +32,11 @@ class CreateNoteOutput(BaseModel):
 
 
 async def create_note_handler(
-    session: AsyncSession,
+    execution_context: ToolExecutionContext,
     payload: CreateNoteInput,
 ) -> dict[str, Any]:
+    session = execution_context.db_session
+
     note_repository = SQLAlchemyNoteRepository(session)
     project_repository = SQLAlchemyProjectRepository(session)
     audit_log_repository = SQLAlchemyAuditLogRepository(session)
@@ -51,7 +54,8 @@ async def create_note_handler(
             author_id=payload.author_id,
             content=payload.content,
             idempotency_key=payload.idempotency_key,
-        )
+        ),
+        request_context=execution_context.request_context,
     )
 
     await session.commit()
