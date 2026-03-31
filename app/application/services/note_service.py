@@ -59,7 +59,12 @@ class NoteService:
             request_id=request_context.request_id,
             tool_name="create_note",
             action_type=AuditAction.NOTE_CREATED,
-            input_payload=payload.content,
+            input_payload=(
+                f"project_id={payload.project_id};"
+                f"author_type={payload.author_type};"
+                f"author_id={payload.author_id};"
+                f"idempotency_key={payload.idempotency_key}"
+            ),
             output_status="success",
             error_code=None,
         )
