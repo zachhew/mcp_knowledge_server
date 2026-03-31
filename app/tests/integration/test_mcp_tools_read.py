@@ -99,3 +99,27 @@ async def test_create_note_writes_single_row_due_to_idempotency_async(
         select(Note).where(Note.idempotency_key == "idem-note-002")
     )
     assert len(result.scalars().all()) == 1
+
+
+@pytest.mark.asyncio
+async def test_search_knowledge_fts_returns_documents(client, auth_headers, prepared_data) -> None:
+    response = await client.post(
+        "/api/v1/mcp",
+        headers=auth_headers,
+        json={
+            "jsonrpc": "2.0",
+            "id": 20,
+            "method": "tools/call",
+            "params": {
+                "name": "search_knowledge",
+                "arguments": {
+                    "query": "retrieval tasks notes",
+                },
+            },
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["error"] is None
+    assert len(payload["result"]["content"]["items"]) >= 1

@@ -1,4 +1,5 @@
 from sqlalchemy import Boolean, Enum, ForeignKey, String, Text
+from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.domain.enums.document_type import DocumentType
@@ -22,6 +23,7 @@ class Document(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         )
     )
     is_deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    search_vector: Mapped[str | None] = mapped_column(TSVECTOR, nullable=True)
 
     project = relationship("Project", back_populates="documents")
     chunks = relationship("DocumentChunk", back_populates="document", cascade="all, delete-orphan")

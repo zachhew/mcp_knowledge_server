@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from uuid import UUID
 
-from sqlalchemy import or_, select
+from sqlalchemy import or_, select, desc, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.models.document import Document
@@ -28,26 +28,55 @@ class SQLAlchemyDocumentRepository:
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
+    from sqlalchemy import desc, func, or_, select
+    from app.domain.models.document import Document
+
     async def search(
-        self,
-        query: str,
-        project_id: UUID | None = None,
-        limit: int = 10,
+            self,
+            query: str,
+            project_id: UUID | None = None,
+            limit: int = 10,
     ) -> Sequence[Document]:
-        stmt = select(Document).where(Document.is_deleted.is_(False))
+        ts_query = func.websearch_to_tsquery("english", query)
+        rank = func.ts_rank(Document.search_vector, ts_query)
+
+        stmt = (
+            select(Document)
+            .where(
+                Document.is_deleted.is_(False),
+                Document.search_vector.op("@@")(ts_query),
+            )
+        )
 
         if project_id is not None:
             stmt = stmt.where(Document.project_id == project_id)
 
-        pattern = f"%{query}%"
-        stmt = stmt.where(
-            or_(
-                Document.title.ilike(pattern),
-                Document.content.ilike(pattern),
-                Document.summary.ilike(pattern),
-                Document.tags.ilike(pattern),
-            )
-        ).order_by(Document.updated_at.desc()).limit(limit)
+        stmt = stmt.order_by(desc(rank), Document.updated_at.desc()).limit(limit)
 
         result = await self._session.execute(stmt)
-        return result.scalars().all()
+        documents = result.scalars().all()
+
+        if documents:
+            return documents
+
+        pattern = f"%{query}%"
+        fallback_stmt = select(Document).where(Document.is_deleted.is_(False))
+
+        if project_id is not None:
+            fallback_stmt = fallback_stmt.where(Document.project_id == project_id)
+
+        fallback_stmt = (
+            fallback_stmt.where(
+                or_(
+                    Document.title.ilike(pattern),
+                    Document.content.ilike(pattern),
+                    Document.summary.ilike(pattern),
+                    Document.tags.ilike(pattern),
+                )
+            )
+            .order_by(Document.updated_at.desc())
+            .limit(limit)
+        )
+
+        fallback_result = await self._session.execute(fallback_stmt)
+        return fallback_result.scalars().all()
