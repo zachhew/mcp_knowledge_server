@@ -7,6 +7,7 @@ from app.application.interfaces.repositories import (
     ProjectRepositoryProtocol,
 )
 from app.core.exceptions import NotFoundError
+from app.core.request_context import RequestContext
 from app.domain.enums.audit_action import AuditAction
 from app.domain.models.audit_log import AuditLog
 from app.domain.models.note import Note
@@ -23,7 +24,11 @@ class NoteService:
         self._project_repository = project_repository
         self._audit_log_repository = audit_log_repository
 
-    async def create_note(self, payload: NoteCreateDTO) -> NoteCreatedDTO:
+    async def create_note(
+        self,
+        payload: NoteCreateDTO,
+        request_context: RequestContext,
+    ) -> NoteCreatedDTO:
         project = await self._project_repository.get_by_id(payload.project_id)
         if project is None:
             raise NotFoundError("Project not found")
@@ -50,8 +55,8 @@ class NoteService:
         created = await self._note_repository.create(note)
 
         audit_log = AuditLog(
-            client_id=None,
-            request_id=None,
+            client_id=request_context.client_id,
+            request_id=request_context.request_id,
             tool_name="create_note",
             action_type=AuditAction.NOTE_CREATED,
             input_payload=payload.content,
