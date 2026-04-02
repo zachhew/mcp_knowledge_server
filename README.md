@@ -1,5 +1,6 @@
 # MCP Knowledge Server
 [![CI](https://github.com/zachhew/mcp_knowledge_server/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/zachhew/mcp_knowledge_server/actions/workflows/ci.yml)
+
 Production-grade MCP-сервер для LLM-агентов, предоставляющий безопасные typed tools для поиска знаний, чтения документов, сборки проектного контекста и выполнения ограниченных действий внутри системы.
 
 ## О проекте
