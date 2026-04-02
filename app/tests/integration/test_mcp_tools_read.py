@@ -9,7 +9,9 @@ from app.domain.models.task import Task
 from app.infrastructure.db.session import SessionFactory
 
 
-async def test_create_task_creates_task_and_returns_payload(client, auth_headers, prepared_data) -> None:
+async def test_create_task_creates_task_and_returns_payload(
+    client, auth_headers, prepared_data
+) -> None:
     response = await client.post(
         "/api/v1/mcp",
         headers=auth_headers,
@@ -95,9 +97,7 @@ async def test_create_note_writes_single_row_due_to_idempotency_async(
     await client.post("/api/v1/mcp", headers=auth_headers, json=request_payload)
     await client.post("/api/v1/mcp", headers=auth_headers, json=request_payload)
 
-    result = await db_session.execute(
-        select(Note).where(Note.idempotency_key == "idem-note-002")
-    )
+    result = await db_session.execute(select(Note).where(Note.idempotency_key == "idem-note-002"))
     assert len(result.scalars().all()) == 1
 
 

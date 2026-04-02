@@ -32,20 +32,17 @@ class SQLAlchemyDocumentRepository:
     from app.domain.models.document import Document
 
     async def search(
-            self,
-            query: str,
-            project_id: UUID | None = None,
-            limit: int = 10,
+        self,
+        query: str,
+        project_id: UUID | None = None,
+        limit: int = 10,
     ) -> Sequence[Document]:
         ts_query = func.websearch_to_tsquery("english", query)
         rank = func.ts_rank(Document.search_vector, ts_query)
 
-        stmt = (
-            select(Document)
-            .where(
-                Document.is_deleted.is_(False),
-                Document.search_vector.op("@@")(ts_query),
-            )
+        stmt = select(Document).where(
+            Document.is_deleted.is_(False),
+            Document.search_vector.op("@@")(ts_query),
         )
 
         if project_id is not None:

@@ -25,11 +25,7 @@ class ApiKeyAuthService:
         if client is None or not client.is_active:
             raise NotFoundError("Invalid API key")
 
-        scopes = frozenset(
-            item.strip()
-            for item in client.scopes.split(",")
-            if item.strip()
-        )
+        scopes = frozenset(item.strip() for item in client.scopes.split(",") if item.strip())
 
         return AuthenticatedClientDTO(
             id=client.id,

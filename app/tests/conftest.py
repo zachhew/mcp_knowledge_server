@@ -31,6 +31,7 @@ async def reset_engine_pool():
     yield
     await engine.dispose()
 
+
 @pytest_asyncio.fixture
 async def client():
     async with AsyncClient(
@@ -38,6 +39,7 @@ async def client():
         base_url="http://testserver",
     ) as test_client:
         yield test_client
+
 
 @pytest_asyncio.fixture
 async def db_session() -> AsyncSession:
@@ -113,6 +115,7 @@ async def prepared_data(db_session: AsyncSession) -> dict[str, str]:
         "api_key": TEST_API_KEY,
     }
 
+
 @pytest.fixture
 def auth_headers() -> dict[str, str]:
     return {
@@ -120,4 +123,3 @@ def auth_headers() -> dict[str, str]:
         "x-api-key": TEST_API_KEY,
         "x-request-id": "test-request-001",
     }
-

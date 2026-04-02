@@ -62,7 +62,9 @@ async def test_search_knowledge_returns_documents(client, auth_headers, prepared
     assert len(payload["result"]["content"]["items"]) >= 1
 
 
-async def test_build_project_context_returns_project_bundle(client, auth_headers, prepared_data) -> None:
+async def test_build_project_context_returns_project_bundle(
+    client, auth_headers, prepared_data
+) -> None:
     response = await client.post(
         "/api/v1/mcp",
         headers=auth_headers,
