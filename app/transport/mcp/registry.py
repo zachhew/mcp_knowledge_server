@@ -8,7 +8,6 @@ from pydantic import BaseModel
 
 from app.transport.mcp.context import ToolExecutionContext
 
-
 ToolHandler = Callable[[ToolExecutionContext, BaseModel], Awaitable[dict[str, Any]]]
 
 

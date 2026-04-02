@@ -4,7 +4,6 @@ from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.dto.tasks import TaskCreateDTO
 from app.application.services.task_write_service import TaskWriteService

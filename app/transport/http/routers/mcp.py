@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,12 +16,15 @@ METHOD_NOT_FOUND = -32601
 INVALID_PARAMS = -32602
 INTERNAL_ERROR = -32603
 
+DbSessionDep = Annotated[AsyncSession, Depends(get_db_session)]
+RequestContextDep = Annotated[RequestContext, Depends(build_request_context)]
+
 
 @router.post("/mcp", response_model=JsonRpcResponse)
 async def mcp_endpoint(
     request: JsonRpcRequest,
-    session: AsyncSession = Depends(get_db_session),
-    request_context: RequestContext = Depends(build_request_context),
+    session: DbSessionDep,
+    request_context: RequestContextDep,
 ) -> JsonRpcResponse:
     params = request.params or {}
 

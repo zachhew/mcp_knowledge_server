@@ -3,10 +3,7 @@ from __future__ import annotations
 import pytest
 from sqlalchemy import select
 
-from app.domain.models.audit_log import AuditLog
 from app.domain.models.note import Note
-from app.domain.models.task import Task
-from app.infrastructure.db.session import SessionFactory
 
 
 async def test_create_task_creates_task_and_returns_payload(

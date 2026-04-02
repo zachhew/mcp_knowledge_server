@@ -23,7 +23,7 @@ class FakeRepo:
     async def get_by_hashed_api_key(self, hashed_api_key: str):
         if self._client is None:
             return None
-        expected = hashlib.sha256("valid-key".encode("utf-8")).hexdigest()
+        expected = hashlib.sha256(b"valid-key").hexdigest()
         if hashed_api_key == expected:
             return self._client
         return None

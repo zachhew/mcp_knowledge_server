@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import FrozenSet
 from uuid import UUID
 
 
@@ -9,5 +8,5 @@ from uuid import UUID
 class AuthenticatedClientDTO:
     id: UUID
     name: str
-    scopes: FrozenSet[str]
+    scopes: frozenset[str]
     is_active: bool

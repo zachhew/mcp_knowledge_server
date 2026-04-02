@@ -4,7 +4,7 @@ from time import perf_counter
 
 
 class Timer:
-    def __enter__(self) -> "Timer":
+    def __enter__(self) -> Timer:
         self._start = perf_counter()
         self.elapsed = 0.0
         return self

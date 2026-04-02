@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.application.dto.tasks import TaskCreateDTO, TaskCreatedDTO
+from app.application.dto.tasks import TaskCreatedDTO, TaskCreateDTO
 from app.application.interfaces.repositories import (
     AuditLogRepositoryProtocol,
     ProjectRepositoryProtocol,

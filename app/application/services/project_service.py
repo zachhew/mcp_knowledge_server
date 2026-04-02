@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from uuid import UUID
-
 from app.application.dto.documents import DocumentListItemDTO
 from app.application.dto.projects import ProjectContextDTO, ProjectDTO
 from app.application.dto.tasks import TaskListItemDTO
@@ -10,10 +8,10 @@ from app.application.interfaces.repositories import (
     ProjectRepositoryProtocol,
     TaskRepositoryProtocol,
 )
+from app.domain.enums.task_status import TaskStatus
 from app.domain.models.document import Document
 from app.domain.models.project import Project
 from app.domain.models.task import Task
-from app.domain.enums.task_status import TaskStatus
 
 
 class ProjectService:

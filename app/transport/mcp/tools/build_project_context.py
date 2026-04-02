@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any
 
 from pydantic import BaseModel, Field
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.services.project_service import ProjectService
 from app.infrastructure.repositories.document_repository import SQLAlchemyDocumentRepository

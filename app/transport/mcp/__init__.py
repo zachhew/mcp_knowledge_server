@@ -5,6 +5,16 @@ from app.transport.mcp.tools.build_project_context import (
     BuildProjectContextOutput,
     build_project_context_handler,
 )
+from app.transport.mcp.tools.create_note import (
+    CreateNoteInput,
+    CreateNoteOutput,
+    create_note_handler,
+)
+from app.transport.mcp.tools.create_task import (
+    CreateTaskInput,
+    CreateTaskOutput,
+    create_task_handler,
+)
 from app.transport.mcp.tools.get_document import (
     GetDocumentInput,
     GetDocumentOutput,
@@ -19,16 +29,6 @@ from app.transport.mcp.tools.search_tasks import (
     SearchTasksInput,
     SearchTasksOutput,
     search_tasks_handler,
-)
-from app.transport.mcp.tools.create_note import (
-    CreateNoteInput,
-    CreateNoteOutput,
-    create_note_handler,
-)
-from app.transport.mcp.tools.create_task import (
-    CreateTaskInput,
-    CreateTaskOutput,
-    create_task_handler,
 )
 
 registry = ToolRegistry()

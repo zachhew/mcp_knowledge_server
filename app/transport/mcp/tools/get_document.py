@@ -4,7 +4,6 @@ from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.services.document_service import DocumentService
 from app.infrastructure.repositories.document_repository import SQLAlchemyDocumentRepository

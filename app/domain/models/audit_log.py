@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Enum, String, Text
+from sqlalchemy import Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.domain.enums.audit_action import AuditAction

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.application.dto.notes import NoteCreateDTO, NoteCreatedDTO
+from app.application.dto.notes import NoteCreatedDTO, NoteCreateDTO
 from app.application.interfaces.repositories import (
     AuditLogRepositoryProtocol,
     NoteRepositoryProtocol,

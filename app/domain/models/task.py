@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Enum, String, Text
+from sqlalchemy import Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.domain.enums.task_priority import TaskPriority

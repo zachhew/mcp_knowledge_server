@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from uuid import UUID
 
-from sqlalchemy import or_, select, desc, func
+from sqlalchemy import desc, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.models.document import Document
@@ -29,6 +29,7 @@ class SQLAlchemyDocumentRepository:
         return result.scalars().all()
 
     from sqlalchemy import desc, func, or_, select
+
     from app.domain.models.document import Document
 
     async def search(

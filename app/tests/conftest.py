@@ -16,10 +16,8 @@ from app.domain.models.document_chunk import DocumentChunk
 from app.domain.models.note import Note
 from app.domain.models.project import Project
 from app.domain.models.task import Task
-from app.infrastructure.db.session import SessionFactory
+from app.infrastructure.db.session import SessionFactory, engine
 from app.main import app
-from app.infrastructure.db.session import engine
-
 
 TEST_API_KEY = "test-secret-key"
 TEST_API_KEY_HASH = hashlib.sha256(TEST_API_KEY.encode("utf-8")).hexdigest()

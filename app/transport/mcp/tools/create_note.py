@@ -4,7 +4,6 @@ from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.dto.notes import NoteCreateDTO
 from app.application.services.note_service import NoteService

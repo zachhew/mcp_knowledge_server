@@ -6,14 +6,14 @@ from pydantic import ValidationError
 
 from app.core.exceptions import AppError
 from app.core.telemetry import Timer
-from app.transport.mcp.auth import require_scope
-from app.transport.mcp.context import ToolExecutionContext
-from app.transport.mcp.registry import ToolRegistry
-from app.transport.mcp.result import ToolExecutionResult
 from app.infrastructure.observability.metrics import (
     MCP_TOOL_CALLS_TOTAL,
     MCP_TOOL_DURATION_SECONDS,
 )
+from app.transport.mcp.auth import require_scope
+from app.transport.mcp.context import ToolExecutionContext
+from app.transport.mcp.registry import ToolRegistry
+from app.transport.mcp.result import ToolExecutionResult
 
 logger = logging.getLogger(__name__)
 
